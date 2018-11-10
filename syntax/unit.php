@@ -17,9 +17,12 @@ if (!defined('DOKU_INC')) die();
  * 
  * syntax_plugin_PluginName_PluginComponent
  */
-class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
+class syntax_plugin_docblock_unit extends DokuWiki_Syntax_Plugin
 {
 
+    const PLUGIN_NAME = 'docblock';
+    const NODE_NAME = 'unit'; // sames as $this->getPluginComponent
+    const PLUGIN_COMPONENT_NAME = self::NODE_NAME;
 
     /*
      * What is the type of this plugin ?
@@ -29,7 +32,7 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
      */
     public function getType()
     {
-        return 'container';
+        return 'formatting';
     }
 
 
@@ -39,7 +42,17 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
         return 168;
     }
     
-    function getAllowedTypes() { return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); }
+    /**
+     * 
+     * @return type
+     * The plugin type that are allowed inside
+     * this node (All !)
+     * Otherwise the node that are in the matched content are not processed
+     */
+    function getAllowedTypes() { 
+        return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); 
+        
+    }
     
     /**
      * Handle the node 
@@ -53,13 +66,13 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
     public function connectTo($mode)
     {
         // This define the DOKU_LEXER_ENTER state
-        $this->Lexer->addEntryPattern('<unit.*?>(?=.*?</unit>)', $mode, 'plugin_codeblock_' . $this->getPluginComponent());
+        $this->Lexer->addEntryPattern('<unit.*?>(?=.*?</unit>)', $mode, 'plugin_'.self::PLUGIN_NAME.'_'.self::PLUGIN_COMPONENT_NAME);
     }
 
     public function postConnect()
     {
         // We define the DOKU_LEXER_EXIT state
-        $this->Lexer->addExitPattern('</unit>', 'plugin_codeblock_' . $this->getPluginComponent());
+        $this->Lexer->addExitPattern('</unit>', 'plugin_'.self::PLUGIN_NAME.'_'.self::PLUGIN_COMPONENT_NAME);
     }
 
 
@@ -78,8 +91,7 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
 
             case DOKU_LEXER_ENTER :
 
-                // Cache the values
-                return array($state);
+                break;
 
             case DOKU_LEXER_UNMATCHED :
 
@@ -93,8 +105,7 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
 
             case DOKU_LEXER_EXIT:
 
-                // Cache the values
-                return array($state);
+                break;
 
         }
 
@@ -117,7 +128,8 @@ class syntax_plugin_codeblock_unit extends DokuWiki_Syntax_Plugin
             switch ($state) {
 
                 case DOKU_LEXER_ENTER :
-                    $renderer->doc .= '<div class="unit">';
+                    $renderer->doc .= '<div class=".'.self::NODE_NAME.'.">';
+                    $renderer->doc .= "nico";
                     break;
 
                 case DOKU_LEXER_EXIT :

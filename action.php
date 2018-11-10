@@ -25,12 +25,12 @@ class action_plugin_docblock extends DokuWiki_Action_Plugin {
     }
 
     function handle_toolbar(&$event, $param) {
-        $docBlockShortcutKey = $this->getConf('CodeBlockShortCutKey');
+        $docBlockShortcutKey = $this->getConf('DocBlockShortCutKey');
 
         $event->data[] = array(
             'type'   => 'format',
             'title'  => $this->getLang('DocBlockButtonTitle').' ('.$this->getLang('AccessKey').': '.$docBlockShortcutKey.')',
-            'icon'   => '../../plugins/docblock/images/codeblock.png',
+            'icon'   => '../../plugins/docblock/images/docblock.png',
             'open'   => '<units name="Default">\n\t<unit name="default">\n\tt<code>',
             'close'  => '\n\tt</code>\n\tt<console>\n\tt</console></unit></units>\n',
             'key'    => $docBlockShortcutKey
