@@ -1,0 +1,6 @@
+base     docblock
+author   Nicolas GERARD
+email    gerardnico@gmail.com
+date     2018-11-10
+name     docblock Plugin
+desc     Syntax Plugin 
