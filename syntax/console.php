@@ -17,11 +17,11 @@ if (!defined('DOKU_INC')) die();
  * 
  * syntax_plugin_PluginName_PluginComponent
  */
-class syntax_plugin_docblock_unit extends DokuWiki_Syntax_Plugin
+class syntax_plugin_docblock_console extends DokuWiki_Syntax_Plugin
 {
 
     const PLUGIN_NAME = 'docblock';
-    const NODE_NAME = 'unit'; // sames as $this->getPluginComponent
+    const NODE_NAME = 'console'; // sames as $this->getPluginComponent
     const PLUGIN_COMPONENT_NAME = self::NODE_NAME;
 
     /*
@@ -46,11 +46,11 @@ class syntax_plugin_docblock_unit extends DokuWiki_Syntax_Plugin
      * 
      * @return type
      * The plugin type that are allowed inside
-     * this node (All !)
+     * this node (ie nested)
      * Otherwise the node that are in the matched content are not processed
      */
     function getAllowedTypes() { 
-        return array('container', 'formatting', 'substition', 'protected', 'disabled', 'paragraphs'); 
+        return array(); 
         
     }
     
@@ -93,18 +93,8 @@ class syntax_plugin_docblock_unit extends DokuWiki_Syntax_Plugin
 
                 break;
 
-            case DOKU_LEXER_UNMATCHED :
-
-                
-                // 
-                // The nested authorized plugin are given in the function 
-                // getAllowedTypes
-                //
-                // cdata  means normal text ??? See xhtml.php function cdata
-                // What it does exactly, I don't know
-                // but as we want to process the content
-                // w need to add a call to the lexer to go further
-                $handler->_addCall('cdata', array($match), $pos, null);
+            case DOKU_LEXER_UNMATCHED:
+                return array($state,$match);
                 break;
 
             case DOKU_LEXER_EXIT:
@@ -131,15 +121,17 @@ class syntax_plugin_docblock_unit extends DokuWiki_Syntax_Plugin
             // No Unmatched because it's handled in the handle function
             switch ($state) {
 
-                case DOKU_LEXER_ENTER :
-                    $renderer->doc .= '<div class=".'.self::NODE_NAME.'.">';
+                case DOKU_LEXER_UNMATCHED:
+                    $text=$data[1];
+                    /**
+                     * @var Doku_Renderer_xhtml
+                     * See code in Doku_Renderer_xhtml
+                     * with lang, filename, highlight,... parameters
+                     */
+                    $renderer->code($text);
                     break;
-
-                case DOKU_LEXER_EXIT :
-                    $renderer->doc .= '</div>';
-                    break;
+                
             }
-
             return true;
         }
         return false;
